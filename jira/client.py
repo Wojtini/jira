@@ -3591,7 +3591,9 @@ class JIRA:
         if self._fields_cache:
             for i, field_name in enumerate(translated_fields):
                 if field_name in self._fields_cache:
-                    translation_map[self._fields_cache[field_name]] = fields[i]
+                    translation_map[self._fields_cache[field_name]] = translated_fields[
+                        i
+                    ]
                     translated_fields[i] = self._fields_cache[field_name]
 
         return translated_fields, translation_map
@@ -3614,6 +3616,7 @@ class JIRA:
             for field_id, field_name in translation_map.items():
                 if field_id in issue.raw.get("fields", {}):
                     issue.raw["fields"][field_name] = issue.raw["fields"][field_id]
+                    setattr(issue.fields, field_name, issue.raw["fields"][field_id])
 
     # Security levels
     def security_level(self, id: str) -> SecurityLevel:
